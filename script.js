@@ -143,8 +143,10 @@ function ViewModel() {
         });
         
 
+        //Client ID registered with Instagram API
         var accessToken = '037558c22aa9497bb49fe57fe097951e';
 
+        //Calling the instagram API to get images for the infowindows based on the tag
         $.ajax({
             url: 'https://api.instagram.com/v1/tags/' + golfclubItem.tag() + '/media/recent',
             dataType: 'jsonp',
@@ -152,6 +154,7 @@ function ViewModel() {
             data: {client_id: accessToken},
             success: function(data){
                 console.log(data);
+                //Checking that the array returned is not empty, if so assign default image
                 if(data.data.length === 0){
                     golfclubItem.photo("https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s150x150/e35/c135.0.810.810/12071097_474914042679788_769310138_n.jpg");
                     golfclubItem.tag("no-pic-available-using-default");
