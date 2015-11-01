@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>P5 - Map project</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css" />
 
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-8">
-                <h3>San Francisco Golf Map</h2>
+                <h2>San Francisco Golf Map</h2>
                 <div id="map"></div>
             </div>
             <div class="col-xs-6 col-md-4">
@@ -25,7 +25,8 @@
             </div>
         </div>
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiJGsJIE5uJwz1tnkrntu3Dt9irhilneM"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiJGsJIE5uJwz1tnkrntu3Dt9irhilneM&callback=initMap"
+        async defer></script>
     <!-- <script src="http://maps.googleapis.com/maps/api/js" type="text/javascript"></script> -->
     <script type='text/javascript' src='http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js'></script>    
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

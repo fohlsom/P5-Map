@@ -82,6 +82,8 @@ function initMap() {
 
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
     infowindow = new google.maps.InfoWindow();
+
+    ko.applyBindings(new ViewModel());
 }
 
 function ViewModel() {
@@ -91,9 +93,6 @@ function ViewModel() {
     //Declare observable for the filter and for the list of golf clubs
     self.golfclubList = ko.observableArray([]);
     self.filter = ko.observable('');
-
-    //Call the initialize map function
-    initMap();
 
     //Populate the golf club list with golf club objects
     golfclubModel.forEach(function(golfclubItem){
@@ -134,10 +133,12 @@ function ViewModel() {
             var content_string;
              // Attribute data to InfoWindow
              content_string = 
-                '<div class="thumbnail"><img src="' 
-                + golfclubItem.photo() + '" alt="' + golfclubItem.name() + 
+                '<div class="thumbnail"><img src="' +
+                golfclubItem.photo() + '" alt="' + golfclubItem.name() + 
                 '"><div class="caption"><p>' + golfclubItem.name() + 
-                '<h3><span class="label label-success">#' + golfclubItem.tag() + '</span></h3></p></div></div>';
+                '<h3><span class="label label-success">#' +
+                golfclubItem.tag() + '</span></h3></p></div></div>';
+             
              infowindow.setContent(content_string);
              infowindow.open(map, golfclubItem.marker);
         });
@@ -153,7 +154,6 @@ function ViewModel() {
             type: 'GET',
             data: {client_id: accessToken},
             success: function(data){
-                console.log(data);
                 //Checking that the array returned is not empty, if so assign default image
                 if(data.data.length === 0){
                     golfclubItem.photo("https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s150x150/e35/c135.0.810.810/12071097_474914042679788_769310138_n.jpg");
@@ -163,7 +163,6 @@ function ViewModel() {
                 }
             },
             error: function(data){
-                console.log(data);
             }
         });
     });
@@ -193,6 +192,3 @@ function ViewModel() {
         });
     });
 }
-
-
-ko.applyBindings(new ViewModel);
