@@ -129,10 +129,8 @@ function ViewModel() {
             setTimeout(function(){ 
                 golfclubItem.marker.setAnimation(null); 
             }, 750);
-            // Declare Info Window variables
-            var content_string;
-             // Attribute data to InfoWindow
-             content_string = 
+            // Declare InfoWindow variables and create the content
+            var content_string = 
                 '<div class="thumbnail"><img src="' +
                 golfclubItem.photo() + '" alt="' + golfclubItem.name() + 
                 '"><div class="caption"><p>' + golfclubItem.name() + 
