@@ -163,6 +163,8 @@ function ViewModel() {
                 }
             },
             error: function(data){
+                //Console print out for error messages
+                console.log(data);
             }
         });
     });
