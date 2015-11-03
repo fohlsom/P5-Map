@@ -1,7 +1,9 @@
+'use strict';
 //Declaring global variables
 var map;
 var marker;
 var infowindow;
+var bounds;
 
 //Creating a list of golfclubs to populate the map
 var golfclubModel = [
@@ -48,6 +50,13 @@ var golfclubModel = [
         price: 45,
         tag: "sanfranciscogolf"
     },{
+        name: "Pebble Beach GC",
+        lat: 36.5730515,
+        lng: -121.9677784,
+        category: "Private",
+        price: 540,
+        tag: "pebblebeachgolf"
+    },{
         name: "The Olympic Club",
         lat: 37.709339,
         lng: -122.497006,
@@ -76,12 +85,13 @@ function initMap() {
     //Options for the Google map
     var mapOptions = {
         center: new google.maps.LatLng(37.7576792,-122.5078118),
-        zoom: 12,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    //Initializing the map, infowindow and bounds objects
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
     infowindow = new google.maps.InfoWindow();
+    bounds = new google.maps.LatLngBounds();
 
     ko.applyBindings(new ViewModel());
 }
@@ -108,6 +118,9 @@ function ViewModel() {
             title: golfclubItem.name()
         });
 
+        //Get the bounds for each marker which is passed to map.fitBounds.
+        bounds.extend(marker.position);
+
         //Assigning the marker as an attribute to the golf club item object
         golfclubItem.marker = marker;
 
@@ -115,9 +128,10 @@ function ViewModel() {
         //Source: http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
         golfclubItem.isVisible.subscribe(function(currentState) {
             if(currentState) {
-                golfclubItem.marker.setMap(map);
+                golfclubItem.marker.setVisible(true);
             } else {
-                golfclubItem.marker.setMap(null);
+                golfclubItem.marker.setVisible(false);
+                infowindow.close();
             }
         });
         golfclubItem.isVisible(true);
@@ -126,21 +140,21 @@ function ViewModel() {
         //and to open the infowindow
         google.maps.event.addListener(golfclubItem.marker, 'click', function(){
             golfclubItem.marker.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(function(){ 
-                golfclubItem.marker.setAnimation(null); 
+            setTimeout(function(){
+                golfclubItem.marker.setAnimation(null);
             }, 750);
             // Declare InfoWindow variables and create the content
-            var content_string = 
+            var content_string =
                 '<div class="thumbnail"><img src="' +
-                golfclubItem.photo() + '" alt="' + golfclubItem.name() + 
-                '"><div class="caption"><p>' + golfclubItem.name() + 
+                golfclubItem.photo() + '" alt="' + golfclubItem.name() +
+                '"><div class="caption"><p>' + golfclubItem.name() +
                 '<h3><span class="label label-success">#' +
                 golfclubItem.tag() + '</span></h3></p></div></div>';
-             
+
              infowindow.setContent(content_string);
              infowindow.open(map, golfclubItem.marker);
         });
-        
+
 
         //Client ID registered with Instagram API
         var accessToken = '037558c22aa9497bb49fe57fe097951e';
@@ -161,12 +175,20 @@ function ViewModel() {
                 }
             },
             error: function(data){
+                //Alert message for website visitors
+                alert("Sorry but we are having issues reaching the Instagram API.");
                 //Console print out for error messages
                 console.log(data);
             }
         });
     });
-    
+
+    //Adjusts the size of the maps to the bounds of the markers and calls
+    //again if the window is resized.
+    window.onresize = function() {
+      map.fitBounds(bounds);
+    }
+
     //Added a listener to track clicks on the map to close the info windows
     google.maps.event.addListener(map, "click", function(){
         infowindow.close();
@@ -177,9 +199,9 @@ function ViewModel() {
         google.maps.event.trigger(golfclubItem.marker, 'click');
     };
 
-    //Filter function which takes the input from the filter text field and 
-    //compares it to each name in the list of golf clubs. If the filter 
-    //string contains a match it will return true and set the attribute to 
+    //Filter function which takes the input from the filter text field and
+    //compares it to each name in the list of golf clubs. If the filter
+    //string contains a match it will return true and set the attribute to
     //visible on the golf club object.
     //Source 1: http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
     //Source 2: http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
@@ -188,6 +210,7 @@ function ViewModel() {
         return ko.utils.arrayFilter(self.golfclubList(), function(golfclub){
             var doesMatch = golfclub.marker.title.toLowerCase().indexOf(filter) >= 0;
             golfclub.isVisible(doesMatch);
+            map.fitBounds(bounds);
             return doesMatch;
         });
     });

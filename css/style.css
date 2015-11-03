@@ -4,5 +4,11 @@
 
 /*Providing the google map with a height*/
 #map {
-    height: 450px;
+    height: 350px;
+}
+
+@media(max-width: 480px) {
+  h3 {
+    font-size: 12pt;
+  }
 }
